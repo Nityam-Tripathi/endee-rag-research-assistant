@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   endee:
     image: endeeio/endee-server:latest
@@ -5,11 +7,19 @@ services:
     ports:
       - "8080:8080"
     environment:
-      NDD_NUM_THREADS: 0
-      NDD_AUTH_TOKEN: ""  # Optional: set for authentication
+      NDD_AUTH_TOKEN: ""
     volumes:
       - endee-data:/data
-    restart: unless-stopped
+
+  backend:
+    build: .
+    container_name: research-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - endee
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY}
 
 volumes:
   endee-data:
